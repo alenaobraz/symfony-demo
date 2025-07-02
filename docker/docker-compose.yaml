@@ -1,0 +1,50 @@
+services:
+  percona:
+    image: ${PERCONA_IMAGE}
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-file /init.sql
+    hostname: "percona-{{.Node.Hostname}}"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - localserver
+    volumes:
+      - ./var/storage/percona:/var/lib/mysql:rw
+      - ./config/storage/percona/conf.d:/etc/my.cnf.d:ro
+      - ./config/storage/percona/init.sql:/init.sql:ro
+
+  edge:
+    image: ${NGINX_IMAGE}
+    hostname: "nginx-{{.Node.Hostname}}"
+    ports:
+      - "8000:80"
+    networks:
+      - localserver
+    volumes:
+      - ./config/edge/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/edge/conf.d:/etc/nginx/conf.d
+      - ../webapp:/opt/webapp
+      - ./var/log/edge/nginx:/var/log/nginx
+
+  php-fpm:
+    image: ${PHPFPM_IMAGE}
+    hostname: "php-fpm-{{.Node.Hostname}}-{{.Task.Slot}}"
+    networks:
+      - localserver
+    volumes:
+      - ./config/php-fpm/php-fpm.d/php-fpm.conf:/usr/local/etc/php-fpm.d/php-fpm.conf:ro
+      - ./config/php-fpm/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./config/php-fpm/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./var/log/php-fpm:/var/log/php-fpm
+      # backend
+      - ../webapp:/opt/webapp
+      - ./var/storage/php-fpm/var:/opt/webapp/var
+
+
+networks:
+  localserver:
+    external: true
