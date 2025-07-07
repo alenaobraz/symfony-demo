@@ -10,5 +10,11 @@
 
     <div class="example-wrapper">
         <h1>Hello! ✅</h1>
+
+        {% if app.user %}
+            <div class="mb-3">
+                You are logged in as {{ app.user.fullName }}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
