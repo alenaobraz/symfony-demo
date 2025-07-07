@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,5 +47,11 @@ final class SecurityController extends AbstractController
             // last authentication error (if any)
             'error' => $authenticationUtils->getLastAuthenticationError(),
         ]);
+    }
+
+    #[Route('/logout', name: 'app_logout')]
+    public function logout()
+    {
+        throw new Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
     }
 }
