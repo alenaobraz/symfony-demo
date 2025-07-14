@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: "App\Repository\UserRepository")]
+#[UniqueEntity(["email"], message: 'constraints.email.unique')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     final public const ROLE_USER = 'ROLE_USER';
@@ -19,11 +21,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 1000)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: 'constraints.full_name.blank')]
     private ?string $fullName = null;
 
     #[ORM\Column(type: Types::STRING, length: 180, unique: true)]
-    #[Assert\Email]
+    #[Assert\NotBlank(message: 'constraints.email.blank')]
+    #[Assert\Email(message: 'constraints.email.incorrect')]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING)]
@@ -52,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     public function getEmail(): string
