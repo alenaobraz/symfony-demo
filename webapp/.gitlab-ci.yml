@@ -1,8 +1,0 @@
-stages:
-    - analyze
-
-phpstan:
-    stage: analyze
-    script:
-        - phpstan analyse ./src
-    allow_failure: false
