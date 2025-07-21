@@ -22,9 +22,11 @@ commands=(
 
   if [[ ${cmd} == "prepare" ]]; then
     echo $cmd
-    ./console.sh "doctrine:database:drop --if-exists --env=test --force -vvv"
-    ./console.sh "--env=test doctrine:database:create"
-    ./console.sh "--env=test doctrine:schema:create"
+    #./console.sh "doctrine:database:drop --if-exists --env=test --force -vvv"
+    #./console.sh "--env=test doctrine:database:create"
+    #./console.sh "--env=test doctrine:schema:create"
+    ./console.sh "--env=test doctrine:database:create --if-not-exists"
+    ./console.sh "doctrine:migrations:migrate --no-interaction"
   elif [[ ${cmd} == "all" ]]; then
     ./scripts/exec.sh --container php-fpm --workdir "/opt" --command "php ./webapp/vendor/bin/phpunit --configuration webapp/phpunit.dist.xml"
   elif [[ ${cmd} == "one" ]]; then
