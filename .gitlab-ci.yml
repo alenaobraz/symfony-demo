@@ -3,8 +3,6 @@ stages:
 
 phpstan:
     stage: analyze
-    before_script:
-        - ping gitlab.com
     script:
         - phpstan analyse ./src
     allow_failure: false
