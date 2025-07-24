@@ -2,8 +2,8 @@
 
 compose_services=(
     "percona"
-    "edge"
     "php-fpm"
+    "edge"
 )
 
 execute_docker_command() {
