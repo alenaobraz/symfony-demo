@@ -23,12 +23,14 @@ phpunit:
     services:
     - percona:ps-8.0.29-21
     variables:
+        MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
         MYSQL_DATABASE: symfony_demo_test
-        MYSQL_ROOT_PASSWORD: root_password
-        DB_HOST: percona # Hostname for the database service
-        DB_USERNAME: symfony_demo_user
-        DB_PASSWORD: symfony_demo_password
-        DB_PORT: 3306
+        DATABASE_URL: 'mysql://root:@percona:3306/symfony_demo_test'
+        #MYSQL_ROOT_PASSWORD: root_password
+        #DB_HOST: percona # Hostname for the database service
+        #DB_USERNAME: symfony_demo_user
+        #DB_PASSWORD: symfony_demo_password
+        #DB_PORT: 3306
     before_script:
         - cd webapp
         - composer install
