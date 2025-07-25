@@ -1,4 +1,4 @@
-image: alenaobraz/php:8.4-fpm-alpine3.21
+image: jakzal/phpqa:php8.4
 
 before_script:
     - cd webapp
@@ -32,6 +32,7 @@ phpunit:
     before_script:
         - cd webapp
         - composer install
+        - docker-php-ext-install mysqli pdo pdo_mysql
         - php bin/console --env=test doctrine:database:create
         - php bin/console --env=test doctrine:schema:create
     script:
