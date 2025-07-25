@@ -10,9 +10,16 @@ cache:
 
 stages:
     - analyze
+    - test
 
 phpstan:
     stage: analyze
     script:
         - phpstan analyse -c phpstan.dist.neon ./src
+    allow_failure: false
+
+phpunit:
+    stage: test
+    script:
+        - php bin/phpunit --configuration phpunit.dist.xml
     allow_failure: false
