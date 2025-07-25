@@ -28,6 +28,7 @@ phpunit:
         DB_USERNAME: symfony_demo_user
         DB_PASSWORD: symfony_demo_password
     before_script:
+        - cd webapp
         - php bin/console --env=test doctrine:database:create
         - php bin/console --env=test doctrine:schema:create
     script:
