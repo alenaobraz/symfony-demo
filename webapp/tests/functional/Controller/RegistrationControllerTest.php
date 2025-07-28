@@ -16,7 +16,7 @@ class RegistrationControllerTest extends WebTestCase
         $form = $crawler->selectButton('Register')->form();
 
         // Submit the form with valid data
-        $form['registration_form[email]'] = 'test@example.com';
+        $form['registration_form[email]'] = 'test2@example.com';
         $form['registration_form[plainPassword]'] = 'password123';
         $form['registration_form[fullName]'] = 'Иванов Иван Иванович';
         $client->submit($form);
