@@ -16,7 +16,7 @@ class RegistrationControllerTest extends WebTestCase
         $form = $crawler->selectButton('Register')->form();
 
         // Submit the form with valid data
-        $form['registration_form[email]'] = 'test2@example.com';
+        $form['registration_form[email]'] = 'test@example.com';
         $form['registration_form[plainPassword]'] = 'password123';
         $form['registration_form[fullName]'] = 'Иванов Иван Иванович';
         $client->submit($form);
@@ -25,7 +25,7 @@ class RegistrationControllerTest extends WebTestCase
         $this->assertResponseRedirects('/');
 
         // Check for successful user creation (you might need to adapt this part based on your application)
-        $user = $this->getContainer()->get('doctrine')->getRepository(User::class)->findOneBy(['email' => 'test2@example.com']);
+        $user = $this->getContainer()->get('doctrine')->getRepository(User::class)->findOneBy(['email' => 'test@example.com']);
         $this->assertNotNull($user);
     }
 
@@ -60,6 +60,8 @@ class RegistrationControllerTest extends WebTestCase
 
         $this->assertSelectorTextContains('li', $translator->trans('constraints.email.incorrect', [], 'validators')); // Проверка наличия сообщения об ошибке
 
+        $user = $this->getContainer()->get('doctrine')->getRepository(User::class)->findOneBy(['email' => 'test@example.com']);
+        dump($user?->getId());
         // Empty password
         $form['registration_form[email]'] = 'test@example.com';
         $form['registration_form[plainPassword]'] = '';
