@@ -25,7 +25,7 @@ class RegistrationControllerTest extends WebTestCase
         $this->assertResponseRedirects('/');
 
         // Check for successful user creation (you might need to adapt this part based on your application)
-        $user = $this->getContainer()->get('doctrine')->getRepository(User::class)->findOneBy(['email' => 'test@example.com']);
+        $user = $this->getContainer()->get('doctrine')->getRepository(User::class)->findOneBy(['email' => 'test2@example.com']);
         $this->assertNotNull($user);
     }
 
