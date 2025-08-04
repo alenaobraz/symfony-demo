@@ -1,8 +1,17 @@
-image: jakzal/phpqa:php8.4
+image: php8.4-cli
+
+services:
+    - percona:ps-8.0.29-21
+variables:
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    DATABASE_URL: 'mysql://root:@percona:3306/symfony_demo_test'
 
 before_script:
     - cd webapp
     - composer install
+    - docker-php-ext-install mysqli pdo pdo_mysql
+    - php bin/console --env=test doctrine:database:create
+    - php bin/console --env=test doctrine:schema:create
 
 cache:
     paths:
@@ -20,23 +29,6 @@ phpstan:
 
 phpunit:
     stage: test
-    services:
-    - percona:ps-8.0.29-21
-    variables:
-        MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-        MYSQL_DATABASE: symfony_demo_test
-        DATABASE_URL: 'mysql://root:@percona:3306/symfony_demo_test'
-        #MYSQL_ROOT_PASSWORD: root_password
-        #DB_HOST: percona # Hostname for the database service
-        #DB_USERNAME: symfony_demo_user
-        #DB_PASSWORD: symfony_demo_password
-        #DB_PORT: 3306
-    before_script:
-        - cd webapp
-        - composer install
-        - docker-php-ext-install mysqli pdo pdo_mysql
-        - php bin/console --env=test doctrine:database:create
-        - php bin/console --env=test doctrine:schema:create
     script:
         - php bin/phpunit --configuration phpunit.dist.xml
     allow_failure: false
