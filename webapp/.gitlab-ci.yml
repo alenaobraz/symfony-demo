@@ -1,4 +1,4 @@
-image: php8.4-cli
+image: php:8.4-cli
 
 services:
     - percona:ps-8.0.29-21
