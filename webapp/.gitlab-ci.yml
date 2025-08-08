@@ -1,34 +1,52 @@
-image: jakzal/phpqa:php8.4
-
 services:
     - percona:ps-8.0.29-21
 variables:
     MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     DATABASE_URL: 'mysql://root:@percona:3306/symfony_demo_test'
 
-before_script:
-    - cd webapp
-    - composer install
-    - docker-php-ext-install mysqli pdo pdo_mysql
-    - php bin/console --env=test doctrine:database:create
-    - php bin/console --env=test doctrine:schema:create
-
 cache:
     paths:
     - vendor/
 
 stages:
+    - build
     - analyze
     - test
 
+build-image:
+    stage: build
+    image: docker:20.10
+    services:
+        - name: docker:20.10-dind
+          alias: docker # This alias is crucial for DNS resolution
+    variables:
+        DOCKER_HOST: tcp://docker:2375
+        DOCKER_TLS_CERTDIR: "" # Required for DinD
+    script:
+        # Авторизация в DockerHub Container Registry для хранения docker-образа
+        - echo $DOCKERHUB_JOB_TOKEN | docker login --username $DOCKERHUB_REGISTRY_USER --password-stdin
+        - docker build --no-cache -f ./docker/images/php-fpm/Dockerfile -t $CONTAINER_IMAGE_PATH .
+        - docker push $CONTAINER_IMAGE_PATH
+
 phpstan:
     stage: analyze
+    image: jakzal/phpqa:php8.4
+    before_script:
+        - cd webapp
+        - composer install
     script:
         - phpstan analyse -c phpstan.dist.neon ./src
     allow_failure: false
 
 phpunit:
     stage: test
+    image: jakzal/phpqa:php8.4
+    before_script:
+        - cd webapp
+        - composer install
+        - docker-php-ext-install mysqli pdo pdo_mysql
+        - php bin/console --env=test doctrine:database:create
+        - php bin/console --env=test doctrine:schema:create
     script:
         - php bin/phpunit --configuration phpunit.dist.xml
     allow_failure: false
