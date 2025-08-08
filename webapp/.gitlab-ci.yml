@@ -21,7 +21,7 @@ build-image:
     script:
         # Авторизация в GitLab Container Registry для хранения docker-образа
         - echo $CI_JOB_TOKEN | docker login --username $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
-        - docker build --no-cache -f ../docker/images/php-fpm/Dockerfile --tag $CONTAINER_IMAGE_PATH .
+        - docker build --no-cache -f ./docker/images/php-fpm/Dockerfile -t $CONTAINER_IMAGE_PATH .
         - docker push $CONTAINER_IMAGE_PATH
 
 phpstan:
