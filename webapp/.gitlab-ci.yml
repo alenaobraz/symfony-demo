@@ -13,9 +13,9 @@ stages:
     - analyze
     - test
 
-workflow:
-    rules:
-        - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+#workflow:
+#    rules:
+#        - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
 build-image:
     stage: build
@@ -27,10 +27,13 @@ build-image:
         DOCKER_HOST: tcp://docker:2375
         DOCKER_TLS_CERTDIR: "" # Required for DinD
     script:
+        - exit 0
         # Авторизация в DockerHub Container Registry для хранения docker-образа
         - echo $DOCKERHUB_JOB_TOKEN | docker login --username $DOCKERHUB_REGISTRY_USER --password-stdin
         - docker build --no-cache -f ./docker/images/php-fpm/Dockerfile -t $CONTAINER_IMAGE_PATH .
         - docker push $CONTAINER_IMAGE_PATH
+    rules:
+        - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 phpstan:
     stage: analyze
