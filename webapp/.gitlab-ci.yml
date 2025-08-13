@@ -27,6 +27,8 @@ build-image:
         - echo $DOCKERHUB_JOB_TOKEN | docker login --username $DOCKERHUB_REGISTRY_USER --password-stdin
         - docker build --no-cache -f ./docker/images/php-fpm/Dockerfile -t $CONTAINER_IMAGE_PATH .
         - docker push $CONTAINER_IMAGE_PATH
+    rules:
+        - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 phpstan:
     stage: analyze
