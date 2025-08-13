@@ -1,6 +1,7 @@
 services:
   percona:
     image: ${PERCONA_IMAGE}
+    container_name: alena-percona
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-file /init.sql
     hostname: "percona-{{.Node.Hostname}}"
     ports:
@@ -19,6 +20,7 @@ services:
 
   edge:
     image: ${NGINX_IMAGE}
+    container_name: alena-nginx
     hostname: "nginx-{{.Node.Hostname}}"
     ports:
       - "8000:80"
@@ -32,6 +34,7 @@ services:
 
   php-fpm:
     image: ${PHPFPM_IMAGE}
+    container_name: alena-php-fpm
     hostname: "php-fpm-{{.Node.Hostname}}-{{.Task.Slot}}"
     networks:
       - localserver
