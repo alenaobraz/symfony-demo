@@ -30,21 +30,21 @@ build-image:
 
 phpstan:
     stage: analyze
-    image: jakzal/phpqa:php8.4
+    image: $CONTAINER_IMAGE_PATH
     before_script:
         - cd webapp
         - composer install
     script:
-        - phpstan analyse -c phpstan.dist.neon ./src
+        - vendor/bin/phpstan analyse -c phpstan.dist.neon ./src
     allow_failure: false
 
 phpunit:
     stage: test
-    image: jakzal/phpqa:php8.4
+    image: $CONTAINER_IMAGE_PATH
     before_script:
         - cd webapp
         - composer install
-        - docker-php-ext-install mysqli pdo pdo_mysql
+        #- docker-php-ext-install mysqli pdo pdo_mysql
         - php bin/console --env=test doctrine:database:create
         - php bin/console --env=test doctrine:schema:create
     script:
